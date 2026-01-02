@@ -13,3 +13,9 @@ I am hoping to learn:
 - Complete items on todo list
 - Remember items of todo list after closing 
 
+== Road map ==
+[x] Added menu list
+[] Save function
+[] Add task
+[] delete task
+[] view tasklist
