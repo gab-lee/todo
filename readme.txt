@@ -13,4 +13,3 @@ I am hoping to learn:
 - Complete items on todo list
 - Remember items of todo list after closing 
 
-
