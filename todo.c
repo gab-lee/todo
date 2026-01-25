@@ -70,7 +70,7 @@ void clear_screen(void) {
     fflush(stdout);
 }
 
-int clear_tasklist(FILE *todo){
+int clear_tasklist(FILE **todo){
 	//close and reopens file to wipe it
 	char input [16]; 
 	printf("\033[31mAre you sure you want to clear tasklist? This step cannot be undone.\033[0m\n");
@@ -80,13 +80,13 @@ int clear_tasklist(FILE *todo){
                 return 0;
         }
 
-	else if (input[0] == 'Y'){
-		todo = freopen("todo.txt","w+",todo);
-		if (!todo){perror("freopen"); return 1;}
+	else if (input[0] == 'Y' || input[0] == 'y'){
+		*todo = freopen("todo.txt","w+",*todo);
+		if (!*todo){perror("freopen"); return 1;}
 		printf("Tasklist was successfully cleared\n");
 		}
 	
-	else if (input[0] == 'N'){
+	else if (input[0] == 'N' || input[0] == 'n'){
 		printf("Task list was not cleared\n");
 		}
 	
@@ -122,7 +122,7 @@ int select_menu(char user_input, FILE* todo){
                 case '2': printf("complete a task\n");break;
                 case '3': printf("delete a task\n");break;
                 case '4': view_tasklist(todo);break;
-		case '5': clear_tasklist(todo); break;
+		case '5': clear_tasklist(&todo); break;
                 case '0': return 0; 
                 default: printf("Invalid choice. \n"); break; //User may input non-valid integers
                 }
