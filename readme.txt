@@ -18,6 +18,11 @@ I am hoping to learn:
 [x] Added menu list
 [x] Save function
 [x] Add task
-[] Delete task
-[] Complete task
+[x] Delete task
+[x] Complete task
 [x] View tasklist
+
+== Next sprint ==
+[] Have todo list be displayed as a default instead of an action
+[] Undo actions [D] / [X] ->[ ]
+[] allow for task list to hold more than 9 tasks (99 tasks would be good)
