@@ -2,7 +2,7 @@
 
 FILE *open_file(void){
 //open task list
-	FILE *todo = fopen("todo.txt","a+"); //open/create todo.txt for read and append
+	FILE *todo = fopen("todo.txt","r+"); //open/create todo.txt for read and append
         if (todo == NULL){
                 perror("fopen"); //print error if file was not opened/created
                 return NULL;
@@ -16,13 +16,61 @@ int save_task(FILE *todo){
 	char task[61]; //61 is a buffer
 	printf("Type a new task:");
         
-	if(fgets(task, sizeof task, stdin) == NULL){
+	if(fgets(task, sizeof(task), stdin) == NULL){
 		return 0; //exit 
 	}
 	
 	else{
-        	fprintf(todo," %s",task);
+        	if (fseek(todo, 0, SEEK_END) != 0) return 0;
+		fprintf(todo,"[ ]  %s",task);
 	}
+	return -1;
+}
+
+int view_tasklist(FILE *todo){
+//function displays todo list
+	int count = 1;
+	char line[1024];
+	rewind(todo); //moves cursor to the beginning of the file
+	
+	while (fgets(line, sizeof(line), todo)) {
+    		printf("%d. %s", count, line);
+		count += 1;
+	}
+
+	return -1;
+}
+
+
+void overwrite_task_state(FILE *todo,char task_no,char new_state){
+	//move to task no.
+	printf("%d",task_no);	
+	fputc(new_state, todo);//chagnes the state of the task
+	fflush(todo); //forces change to happen now
+	}
+
+int complete_task(FILE *todo){
+	char target[2];
+	
+	view_tasklist(todo);
+	printf("========================\n");
+	printf("Which task would you like to complete?\n");
+	
+	if(fgets(target,sizeof(target),stdin) == NULL){
+		return 0;
+	}
+	
+	overwrite_task_state(todo,target[0],'X');	
+	
+	return -1;
+	}
+
+int clear_tasklist(FILE *todo){
+	//close and reopens file to wipe it 
+	todo = freopen("todo.txt","w",todo);
+	if (!todo){perror("freopen"); return 1;}
+	
+
 	return -1;
 }
 
@@ -35,6 +83,7 @@ void display_menu(void){
         printf("[2] Complete a task\n");
         printf("[3] Delete a task\n");
         printf("[4] View tasklist\n");
+	printf("[5] Clear tasklist\n");
         printf("[0] Quit\n");
         printf("========================\n");
         printf("Please enter a number:");
@@ -48,7 +97,8 @@ int select_menu(char user_input, FILE* todo){
         	case '1': printf("add a new task\n"); save_task(todo);break;
                 case '2': printf("complete a task\n");break;
                 case '3': printf("delete a task\n");break;
-                case '4': printf("tasklist\n");break;
+                case '4': view_tasklist(todo);break;
+		case '5': clear_tasklist(todo); break;
                 case '0': return 0; 
                 default: printf("Invalid choice. \n"); break; //User may input non-valid integers
                 }

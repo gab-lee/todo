@@ -9,13 +9,15 @@ I am hoping to learn:
 
 == Features == 
 - Add items to todo list
-- Load items in todo list
+- View items to todo list
 - Complete items on todo list
+- Delete items on todo list
 - Remember items of todo list after closing 
 
 == Road map ==
 [x] Added menu list
-[] Save function
-[] Add task
-[] delete task
-[] view tasklist
+[x] Save function
+[x] Add task
+[] Delete task
+[] Complete task
+[x] View tasklist
