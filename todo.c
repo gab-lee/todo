@@ -65,18 +65,37 @@ int complete_task(FILE *todo){
 	return -1;
 	}
 
-int clear_tasklist(FILE *todo){
-	//close and reopens file to wipe it 
-	todo = freopen("todo.txt","w+",todo);
-	if (!todo){perror("freopen"); return 1;}
-	
-
-	return -1;
-}
-
 void clear_screen(void) {
     printf("\033[2J\033[H"); // clear screen + move cursor home
     fflush(stdout);
+}
+
+int clear_tasklist(FILE *todo){
+	//close and reopens file to wipe it
+	char input [16]; 
+	printf("\033[31mAre you sure you want to clear tasklist? This step cannot be undone.\033[0m\n");
+	printf("Y/N\n");
+
+	if(fgets(input,sizeof(input),stdin) == NULL){
+                return 0;
+        }
+
+	else if (input[0] == 'Y'){
+		todo = freopen("todo.txt","w+",todo);
+		if (!todo){perror("freopen"); return 1;}
+		printf("Tasklist was successfully cleared\n");
+		}
+	
+	else if (input[0] == 'N'){
+		printf("Task list was not cleared\n");
+		}
+	
+	else{
+		printf("\033[31minvalid input tasklist was not cleared\033[0m\n");
+		return -1;
+		}
+
+	return -1;
 }
 
 void display_menu(void){
