@@ -42,28 +42,61 @@ int view_tasklist(FILE *todo){
 }
 
 
-void overwrite_task_state(FILE *todo,char task_no,char new_state){
+int overwrite_task_state(FILE *todo,int task_no,char new_state){
+	rewind(todo);
+
+	char line[1024];
+	int current = 1;
+
 	//move to task no.
-	printf("%d",task_no);	
-	fputc(new_state, todo);//chagnes the state of the task
-	fflush(todo); //forces change to happen now
+	while (1){
+		long line_start = ftell(todo);
+		if (!fgets(line, sizeof(line),todo))
+			return 0;
+		if (current == task_no){
+			if(line[0] != '[' || line[2] != ']') return 0;
+			fseek(todo, line_start +1, SEEK_SET);
+			fputc(new_state, todo);//chagnes the state of the task
+			fflush(todo); //forces change to happen now
+			return 1;
+			}
+		current ++;
+		}
 	}
 
 int complete_task(FILE *todo){
-	char target[2];
+	char input[16];
 	
 	view_tasklist(todo);
 	printf("========================\n");
 	printf("Which task would you like to complete?\n");
 	
-	if(fgets(target,sizeof(target),stdin) == NULL){
+	if(fgets(input,sizeof(input),stdin) == NULL){
 		return 0;
 	}
 	
-	overwrite_task_state(todo,target[0],'X');	
+	int task_no = input[0]- '0';	
+	overwrite_task_state(todo,task_no,'X');	
 	
 	return -1;
 	}
+
+int delete_task(FILE *todo){
+        char input[16];
+
+        view_tasklist(todo);
+        printf("========================\n");
+        printf("Which task would you like to delete?\n");
+
+        if(fgets(input,sizeof(input),stdin) == NULL){
+                return 0;
+        }
+
+        int task_no = input[0]- '0';
+        overwrite_task_state(todo,task_no,'D');
+
+        return -1;
+        }
 
 void clear_screen(void) {
     printf("\033[2J\033[H"); // clear screen + move cursor home
@@ -119,8 +152,8 @@ int select_menu(char user_input, FILE* todo){
 //user selects menu item
 	switch(user_input){
         	case '1': printf("add a new task\n"); save_task(todo);break;
-                case '2': printf("complete a task\n");break;
-                case '3': printf("delete a task\n");break;
+                case '2': complete_task(todo);break;
+                case '3': delete_task(todo);break;
                 case '4': view_tasklist(todo);break;
 		case '5': clear_tasklist(&todo); break;
                 case '0': return 0; 
