@@ -67,11 +67,16 @@ int complete_task(FILE *todo){
 
 int clear_tasklist(FILE *todo){
 	//close and reopens file to wipe it 
-	todo = freopen("todo.txt","w",todo);
+	todo = freopen("todo.txt","w+",todo);
 	if (!todo){perror("freopen"); return 1;}
 	
 
 	return -1;
+}
+
+void clear_screen(void) {
+    printf("\033[2J\033[H"); // clear screen + move cursor home
+    fflush(stdout);
 }
 
 void display_menu(void){
@@ -125,6 +130,7 @@ int main(void){
 			continue;
 		} 
 		else if (c >= '0' && c <= '9'){
+			clear_screen();
 			state=select_menu(c,todo); 
 			if (state==0){ fclose(todo); return 0;} //close file and end programme	
 		}
